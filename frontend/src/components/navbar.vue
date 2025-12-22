@@ -93,24 +93,25 @@
                 class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-gray-800 py-1 outline -outline-offset-1 outline-white/10"
               >
                 <MenuItem v-slot="{ active }">
-                  <a
-                    href="#"
+                  <RouterLink
+                    to="/profile"
                     :class="[
                       active ? 'bg-white/5 outline-hidden' : '',
                       'block px-4 py-2 text-sm text-gray-300',
                     ]"
-                    >Your profile</a
+                    >Your profile</RouterLink
                   >
                 </MenuItem>
-                <MenuItem v-slot="{ active }">
-                  <a
-                    href="#"
+                <MenuItem v-slot="{ active }" >
+                  <button
+                    @click="signout"
                     :class="[
                       active ? 'bg-white/5 outline-hidden' : '',
-                      'block px-4 py-2 text-sm text-gray-300',
+                      'block w-full px-4 py-2 text-left text-sm text-gray-300',
                     ]"
-                    >Sign out</a
                   >
+                    Sign Out
+                  </button>
                 </MenuItem>
               </MenuItems>
             </transition>
@@ -152,6 +153,39 @@ import {
 } from "@headlessui/vue";
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/vue/24/outline";
 import { RouterLink } from "vue-router";
+import { useToast } from "vue-toastification";
 
 const navigation = [{ name: "Home", href: "/", current: true }];
+
+const token = localStorage.getItem("token");
+const toast = useToast();
+
+const signout = async () => {
+  console.log("token :", token);
+  try {
+    const res = await fetch("http://127.0.0.1:8000/api/logout", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        'access-control-allow-credentials': 'true',
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (res.ok) {
+      console.log("Logout successful");
+      localStorage.removeItem("token");
+      toast.success("Logout successful!", {
+        timeout: 2000,
+      });
+      // Redirect to home page after 2 seconds
+      setTimeout(() => {
+        window.location.href = "/";
+      }, 2000);
+    }
+  } catch (err) {
+    console.error("Logout failed", err);
+    toast.error("Logout failed. Please try again.");
+    return;
+  }
+};
 </script>

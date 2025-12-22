@@ -1,0 +1,44 @@
+<script setup>
+import { onMounted, ref } from "vue";
+import { useToast } from "vue-toastification";
+
+const toast = useToast();
+const token = localStorage.getItem("token");
+const data = ref(null);
+const error = ref(null);
+
+onMounted(async () => {
+  try {
+    const res = await fetch("http://127.0.0.1:8000/api/profile", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    data.value = await res.json();
+    console.log("Profile data fetched:", data.value);
+    } catch (err) {
+    console.error("Failed to fetch profile data", err);
+    error.value = "Failed to fetch profile data";
+    toast.error("Failed to fetch profile data. Please try again.");
+    return;
+    }
+});
+
+</script>
+<template>
+    <div class="max-w-md mx-auto mt-20 p-6 bg-white rounded-lg shadow-md">
+        <h2 class="text-2xl font-bold mb-6 text-center">Profile</h2>
+        <div v-if="data">
+        <p class="mb-4"><strong>Bio:</strong> {{ data.bio }}</p>
+        <p class="mb-4"><strong>Phone:</strong> {{ data.phone }}</p>
+        </div>
+        <div v-else-if="error" class="text-red-500">
+        {{ error }}
+        </div>
+        <div v-else>
+        <p>Loading profile data...</p>
+        </div>
+    </div>
+</template>

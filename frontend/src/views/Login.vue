@@ -14,6 +14,7 @@ const sendLoginData = async (email, password) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        'access-control-allow-credentials': 'true',
       },
       body: JSON.stringify({ email, password }),
     });
@@ -24,6 +25,10 @@ const sendLoginData = async (email, password) => {
     toast.success("Login successful!", {
       timeout: 2000,
     });
+    // Redirect to home page
+      setTimeout(() => {
+        window.location.href = "/";
+      }, 2000);
   } catch (err) {
     console.error("Login failed", err);
     error.value = "Failed to login";
