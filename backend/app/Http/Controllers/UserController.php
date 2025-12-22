@@ -9,25 +9,28 @@ use Laravel\Sanctum\Exceptions\TokenNotFoundException;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\VerificationCodeMail;
 use App\Http\Requests\UserRequest;
+use Illuminate\Container\Attributes\Auth;
 
 class UserController extends Controller
 {
-    public function register(UserRequest $request){
+    public function register(UserRequest $request)
+    {
         $validatedData = $request->validated();
         // check if the user not in database
-        try{
+        try {
             $user = User::where('email', $validatedData['email'])->first();
-            if($user){
+            if ($user) {
                 return response()->json(['message' => 'user already in database'], 409);
             }
             $user = User::create($validatedData);
             return response()->json(['message' => 'user registered successfully'], 201);
-        }catch(Exception  $e){
+        } catch (Exception  $e) {
             return response()->json(['message' => 'server error'], 500);
         }
     }
 
-    public function login(Request $request){
+    public function login(Request $request)
+    {
         $credentials = $request->validate([
             'email' => 'required|string|email',
             'password' => 'required|string|min:6',
@@ -43,22 +46,24 @@ class UserController extends Controller
         ]);
     }
 
-    public function logout(Request $request){
-        try{
+    public function logout(Request $request)
+    {
+        try {
             $request->user()->currentAccessToken()->delete();
             return response()->json(['message' => 'Logged out successfully']);
-        }catch(TokenNotFoundException $e){
+        } catch (TokenNotFoundException $e) {
             return response()->json(['message' => 'Token not found'], 404);
-        }catch(Exception  $e){
+        } catch (Exception  $e) {
             return response()->json(['message' => 'server error'], 500);
         }
     }
 
-    public function forgotPassword(Request $request){
+    public function forgotPassword(Request $request)
+    {
         // Implementation for forgot password
-        try{
+        try {
             $user = User::where('email', $request->email)->first();
-            if(!$user){
+            if (!$user) {
                 return response()->json(['message' => 'user not found'], 404);
             }
             // Generate and send verification code logic here
@@ -70,10 +75,8 @@ class UserController extends Controller
             Mail::to($user->email)->send(new VerificationCodeMail($code));
 
             return response()->json(['message' => 'verification code sent'], 200);
-
-        }catch(Exception  $e){
+        } catch (Exception  $e) {
             return response()->json(['message' => 'Failed to send email'], 500);
         }
-        
     }
 }

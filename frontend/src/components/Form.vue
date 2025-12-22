@@ -1,5 +1,6 @@
 <script setup>
     import { ref } from 'vue'
+    
     const sendLoginData = async (email, password) => {
         const data = ref(null);
         const error = ref(null);
