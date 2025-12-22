@@ -3,13 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\{Auth, Mail};
 use App\Models\User;
-use Exception;
-use Laravel\Sanctum\Exceptions\TokenNotFoundException;
-use Illuminate\Support\Facades\Mail;
 use App\Mail\VerificationCodeMail;
 use App\Http\Requests\UserRequest;
-use Illuminate\Container\Attributes\Auth;
+use Exception;
 
 class UserController extends Controller
 {
@@ -31,14 +29,16 @@ class UserController extends Controller
 
     public function login(Request $request)
     {
+
         $credentials = $request->validate([
             'email' => 'required|string|email',
             'password' => 'required|string|min:6',
         ]);
-        if (!auth()->attempt($credentials)) {
+        
+        if (!Auth::attempt($credentials)) {
             return response()->json(['message' => 'Invalid login credentials'], 401);
         }
-        $user = auth()->user();
+        $user = Auth::user();
         $token = $user->createToken('auth_token')->plainTextToken;
         return response()->json([
             'access_token' => $token,
@@ -49,11 +49,12 @@ class UserController extends Controller
     public function logout(Request $request)
     {
         try {
-            $request->user()->currentAccessToken()->delete();
+            if (!$request->user()) {
+                return response()->json(['message' => 'Unauthorized'], 401);
+            }
+            $request->user()->tokens()->delete();
             return response()->json(['message' => 'Logged out successfully']);
-        } catch (TokenNotFoundException $e) {
-            return response()->json(['message' => 'Token not found'], 404);
-        } catch (Exception  $e) {
+        } catch (Exception $e) {
             return response()->json(['message' => 'server error'], 500);
         }
     }
