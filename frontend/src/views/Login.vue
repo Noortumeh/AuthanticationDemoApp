@@ -1,13 +1,30 @@
 <script setup>
+import AuthForm from "@/components/AuthForm.vue";
 import { ref } from "vue";
 import { RouterLink } from "vue-router";
 import { useToast } from "vue-toastification";
 
 const toast = useToast();
 
+const fields = [
+  {
+    name: "email",
+    type: "email",
+    placeholder: "Enter your email",
+  },
+  {
+    name: "password",
+    type: "password",
+    placeholder: "Enter your password",
+  },
+];
+
+const loading = ref(false);
+
 const sendLoginData = async (email, password) => {
   const data = ref(null);
   const error = ref(null);
+  loading.value = true;
 
   try {
     const res = await fetch("http://127.0.0.1:8000/api/login", {
@@ -38,7 +55,14 @@ const sendLoginData = async (email, password) => {
 };
 </script>
 <template>
-  <form
+  <AuthForm
+    :fields="fields"
+    formTitle="Login"
+    @submitForm="sendLoginData($event.email, $event.password)"
+    :loading="loading" 
+    />
+
+  <!-- <form
     @submit.prevent="
       sendLoginData($event.target.email.value, $event.target.password.value)
     "
@@ -81,5 +105,5 @@ const sendLoginData = async (email, password) => {
         Forgot Password?
       </RouterLink>
     </div>
-  </form>
+  </form> -->
 </template>

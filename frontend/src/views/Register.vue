@@ -1,13 +1,39 @@
 <script setup>
+import AuthForm from "@/components/AuthForm.vue";
 import { ref } from "vue";
 import { useToast } from "vue-toastification";
 
 const toast = useToast();
 
+const fields = [
+  {
+    name: "name",
+    type: "text",
+    placeholder: "Enter your name",
+  },
+  {
+    name: "email",
+    type: "email",
+    placeholder: "Enter your email",
+  },
+  {
+    name: "password",
+    type: "password",
+    placeholder: "Enter your password",
+  },
+  {
+    name: "password_confirmation",
+    type: "password",
+    placeholder: "Confirm your password",
+  },
+];
+
+const loading = ref(false);
+
 const handleRegister = async (name, email, password, password_confirmation) => {
   const data = ref(null);
   const error = ref(null);
-  console.log(name, email, password, password_confirmation);
+  loading.value = true;
   try {
     const res = await fetch("http://127.0.0.1:8000/api/register", {
       method: "POST",
@@ -31,7 +57,13 @@ const handleRegister = async (name, email, password, password_confirmation) => {
 </script>
 
 <template>
-  <form
+  <AuthForm
+    :fields="fields"
+    formTitle="Register"
+    @submitForm="handleRegister($event.name, $event.email, $event.password, $event.password_confirmation)"
+    :loading="loading" 
+    />
+  <!-- <form
     @submit.prevent="
       handleRegister(
         $event.target.name.value,
@@ -97,5 +129,5 @@ const handleRegister = async (name, email, password, password_confirmation) => {
         Register
       </button>
     </div>
-  </form>
+  </form> -->
 </template>
