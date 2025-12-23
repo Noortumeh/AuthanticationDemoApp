@@ -32,6 +32,8 @@ onMounted(async () => {
   <div class="max-w-md mx-auto mt-20 p-6 bg-white rounded-lg shadow-md">
     <h2 class="text-2xl font-bold mb-6 text-center">Profile</h2>
     <div v-if="data">
+      <p class="mb-4"><strong>Name:</strong> {{ data.name }}</p>
+      <p class="mb-4"><strong>Email:</strong> {{ data.email }}</p>
       <p class="mb-4"><strong>Bio:</strong> {{ data.bio }}</p>
       <p class="mb-4"><strong>Phone:</strong> {{ data.phone }}</p>
     </div>
@@ -47,3 +49,4 @@ onMounted(async () => {
     <ProfileDialog />
   </div>
 </template>
+``

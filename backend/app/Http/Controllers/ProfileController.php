@@ -8,16 +8,20 @@ use Illuminate\Support\Facades\Auth;
 
 class ProfileController extends Controller
 {
-    public function show(Request $request){
+    public function show(Request $request)
+    {
         $user = $request->user();
         if (!$user) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
         $profile = $user->profile;
+        $profile['email'] = $user->email;
+        $profile['name'] = $user->name;
         return response()->json($profile);
     }
 
-    public function addProfile(Request $request){
+    public function addProfile(Request $request)
+    {
         $user = Auth::user();
         if (!$user) {
             return response()->json(['error' => 'Unauthorized'], 401);
@@ -28,7 +32,7 @@ class ProfileController extends Controller
         ]);
 
         $data['user_id'] = $user->id;
-        if($user->profile){
+        if ($user->profile) {
             $user->profile->update($data);
             return response()->json($user->profile, 200);
         }
