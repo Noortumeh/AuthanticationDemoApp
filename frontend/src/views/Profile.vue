@@ -1,4 +1,5 @@
 <script setup>
+import ProfileDialog from "@/components/ProfileDialog.vue";
 import { onMounted, ref } from "vue";
 import { useToast } from "vue-toastification";
 
@@ -18,27 +19,31 @@ onMounted(async () => {
     });
     data.value = await res.json();
     console.log("Profile data fetched:", data.value);
-    } catch (err) {
+  } catch (err) {
     console.error("Failed to fetch profile data", err);
     error.value = "Failed to fetch profile data";
     toast.error("Failed to fetch profile data. Please try again.");
     return;
-    }
+  }
 });
 
 </script>
 <template>
-    <div class="max-w-md mx-auto mt-20 p-6 bg-white rounded-lg shadow-md">
-        <h2 class="text-2xl font-bold mb-6 text-center">Profile</h2>
-        <div v-if="data">
-        <p class="mb-4"><strong>Bio:</strong> {{ data.bio }}</p>
-        <p class="mb-4"><strong>Phone:</strong> {{ data.phone }}</p>
-        </div>
-        <div v-else-if="error" class="text-red-500">
-        {{ error }}
-        </div>
-        <div v-else>
-        <p>Loading profile data...</p>
-        </div>
+  <div class="max-w-md mx-auto mt-20 p-6 bg-white rounded-lg shadow-md">
+    <h2 class="text-2xl font-bold mb-6 text-center">Profile</h2>
+    <div v-if="data">
+      <p class="mb-4"><strong>Bio:</strong> {{ data.bio }}</p>
+      <p class="mb-4"><strong>Phone:</strong> {{ data.phone }}</p>
     </div>
+    <div v-else-if="error" class="text-red-500">
+      {{ error }}
+    </div>
+    <div v-else>
+      <p>Loading profile data...</p>
+    </div>
+  </div>
+  <
+  <div class="mt-5 text-center">
+    <ProfileDialog />
+  </div>
 </template>

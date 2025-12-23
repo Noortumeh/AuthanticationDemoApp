@@ -28,6 +28,10 @@ class ProfileController extends Controller
         ]);
 
         $data['user_id'] = $user->id;
+        if($user->profile){
+            $user->profile->update($data);
+            return response()->json($user->profile, 200);
+        }
         $profile = Profile::create($data);
         return response()->json($profile, 201);
     }
