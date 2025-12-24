@@ -1,7 +1,6 @@
 <script setup>
 import AuthForm from "@/components/AuthForm.vue";
 import { ref } from "vue";
-import { RouterLink } from "vue-router";
 import { useToast } from "vue-toastification";
 
 const toast = useToast();
@@ -9,11 +8,13 @@ const toast = useToast();
 const fields = [
   {
     name: "email",
+    id: "email",
     type: "email",
     placeholder: "Enter your email",
   },
   {
     name: "password",
+    id: "password",
     type: "password",
     placeholder: "Enter your password",
   },
@@ -31,25 +32,31 @@ const sendLoginData = async (email, password) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        'access-control-allow-credentials': 'true',
+        // "access-control-allow-credentials": "true",
       },
       body: JSON.stringify({ email, password }),
     });
-    data.value = await res.json();
-    // Store the token in localStorage
-    localStorage.setItem("token", data.value.access_token);
-    console.log("Login successful:", data.value);
-    toast.success("Login successful!", {
-      timeout: 2000,
-    });
-    // Redirect to home page
+    if (res.ok) {
+      data.value = await res.json();
+      // Store the token in localStorage
+      localStorage.setItem("token", data.value.access_token);
+      console.log("Login successful:", data.value);
+      toast.success("Login successful!", {
+        timeout: 2000,
+      });
+      // Redirect to home page
       setTimeout(() => {
         window.location.href = "/";
       }, 2000);
+    }else {
+      toast.error("Login failed. Please try again.");
+    }
+    loading.value = false;
   } catch (err) {
     console.error("Login failed", err);
     error.value = "Failed to login";
     toast.error("Login failed. Please try again.");
+    loading.value = false;
     return;
   }
 };
@@ -59,8 +66,8 @@ const sendLoginData = async (email, password) => {
     :fields="fields"
     formTitle="Login"
     @submitForm="sendLoginData($event.email, $event.password)"
-    :loading="loading" 
-    />
+    :loading="loading"
+  />
 
   <!-- <form
     @submit.prevent="

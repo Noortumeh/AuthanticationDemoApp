@@ -10,6 +10,7 @@ const toast = useToast();
 const fields = [
   {
     name: "email",
+    id: "email",
     type: "email",
     placeholder: "Enter your email",
   },
@@ -32,6 +33,9 @@ const sendForgetPass = async (email) => {
       toast.success(data.value.message, {
         timeout: 2000,
       });
+      setTimeout(() => {
+        window.location.href = "/reset-password";
+      }, 2000);
     }
     loading.value = false;
   } catch (err) {

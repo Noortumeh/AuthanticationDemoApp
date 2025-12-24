@@ -15,11 +15,11 @@ return [
     |
     */
 
-    'paths' => ['api/*', 'sanctum/csrf-cookie'],
+    'paths' => ['api/*', 'sanctum/csrf-cookie', 'reset-password'],
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['http://localhost:5173/login', 'http://localhost:5173/register', 'http://localhost:5173','http://localhost:5173/profile', '*'],
+    'allowed_origins' => ['http://localhost:5173/', '*', "http://localhost:3000/reset-password"],
 
     'allowed_origins_patterns' => [],
 
@@ -29,6 +29,6 @@ return [
 
     'max_age' => 0,
 
-    'supports_credentials' => true,
+    'supports_credentials' => false,
 
 ];
