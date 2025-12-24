@@ -11,10 +11,10 @@ const props = defineProps({
     type: String,
     required: true,
   },
-    loading: {
-      type: Boolean,
-      default: false,
-    },
+  loading: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const emit = defineEmits(["submitForm"]);

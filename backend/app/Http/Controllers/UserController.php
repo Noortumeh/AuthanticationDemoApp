@@ -30,7 +30,6 @@ class UserController extends Controller
 
     public function login(Request $request)
     {
-
         $credentials = $request->validate([
             'email' => 'required|string|email',
             'password' => 'required|string|min:6',
@@ -39,7 +38,7 @@ class UserController extends Controller
         if (!Auth::attempt($credentials)) {
             return response()->json(['message' => 'Invalid login credentials'], 401);
         }
-        $user = Auth::user();
+        $user = User::where('email', $credentials['email'])->firstOrFail();
         $token = $user->createToken('auth_token')->plainTextToken;
         return response()->json([
             'access_token' => $token,
@@ -84,13 +83,15 @@ class UserController extends Controller
 
     public function resetPassword(Request $request)
     {
+        echo "resetPassword called";
         $request->validate([
             'email' => 'required|string|email',
             'new_password' => 'required|string|min:6|confirmed',
             'code' => 'required|string',
         ]);
-
+        echo "resetPassword called2222222";
         try {
+            echo "resetPassword called333333333";
             $user = User::where('email', $request->email)->first();
             if (!$user) {
                 return response()->json(['message' => 'user not found'], 404);
@@ -104,8 +105,10 @@ class UserController extends Controller
             $user->expires_at = null;
             $user->save();
 
+            echo "resetPassword called44444444444444";
             return response()->json(['message' => 'password reset successfully'], 200);
         } catch (Exception  $e) {
+            echo "resetPassword called55555555555555555";
             return response()->json(['message' => 'server error'], 500);
         }
     }

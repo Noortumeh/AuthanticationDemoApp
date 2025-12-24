@@ -8,21 +8,25 @@ const toast = useToast();
 const fields = [
   {
     name: "name",
+    id: "name",
     type: "text",
     placeholder: "Enter your name",
   },
   {
     name: "email",
+    id: "email",
     type: "email",
     placeholder: "Enter your email",
   },
   {
     name: "password",
+    id: "password",
     type: "password",
     placeholder: "Enter your password",
   },
   {
-    name: "password_confirmation",
+    name: "password confirmation",
+    id: "password_confirmation",
     type: "password",
     placeholder: "Confirm your password",
   },
