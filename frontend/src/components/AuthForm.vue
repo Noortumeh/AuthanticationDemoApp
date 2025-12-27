@@ -21,7 +21,7 @@ const emit = defineEmits(["submitForm"]);
 
 const form = reactive({});
 props.fields.forEach((field) => {
-  form[field.name] = "";
+  form[field.id] = "";
 });
 
 const handleSubmit = () => {
@@ -35,14 +35,14 @@ const handleSubmit = () => {
     class="max-w-md mx-auto mt-20 p-6 bg-white rounded-lg shadow-md"
   >
     <h2 class="text-2xl font-bold mb-6 text-center">{{ formTitle }}</h2>
-    <div v-for="field in fields" :key="field.name" class="mb-4">
+    <div v-for="field in fields" :key="field.id" class="mb-4">
       <label
         class="block text-gray-700 text-sm font-bold mb-2"
-        for="{{field.name}}"
+        for="{{field.id}}"
         >{{ field.name }}</label
       >
       <input
-        v-model="form[field.name]"
+        v-model="form[field.id]"
         :type="field.type"
         :placeholder="field.placeholder"
         :id="field.id"

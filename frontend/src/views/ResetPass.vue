@@ -41,12 +41,17 @@ const handleResetPass = async (
   new_password_confirmation,
   code
 ) => {
+    console.log(email,
+  new_password,
+  new_password_confirmation,
+  code);
     loading.value = true;
   try {
     const res = await fetch("http://127.0.0.1:8000/api/resetpassword", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "Accept": "application/json",
       },
       body: JSON.stringify({ email, new_password, new_password_confirmation, code }),
     });
@@ -59,6 +64,12 @@ const handleResetPass = async (
       setTimeout(() => {
         window.location.href = "/";
       }, 2000);
+    } else if (res.status === 422) {
+      const errorData = await res.json();
+      const errors = errorData.errors ? Object.values(errorData.errors).flat().join(', ') : 'Validation failed';
+      toast.error(errors);
+    } else {
+      toast.error("Request failed. Please try again.");
     }
     loading.value = false;
   } catch (err) {

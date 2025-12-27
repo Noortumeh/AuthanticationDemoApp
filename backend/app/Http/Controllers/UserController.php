@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\{Auth, Mail};
+use Illuminate\Support\Facades\{Auth, Mail, Log};
 use App\Models\User;
 use App\Mail\VerificationCodeMail;
 use App\Http\Requests\UserRequest;
@@ -83,15 +83,13 @@ class UserController extends Controller
 
     public function resetPassword(Request $request)
     {
-        echo "resetPassword called";
-        $request->validate([
-            'email' => 'required|string|email',
-            'new_password' => 'required|string|min:6|confirmed',
-            'code' => 'required|string',
-        ]);
-        echo "resetPassword called2222222";
+        Log::info('resetPassword called');
         try {
-            echo "resetPassword called333333333";
+            $request->validate([
+                'email' => 'required|string|email',
+                'new_password' => 'required|string|min:6|confirmed',
+                'code' => 'required|string',
+            ]);
             $user = User::where('email', $request->email)->first();
             if (!$user) {
                 return response()->json(['message' => 'user not found'], 404);
@@ -105,10 +103,11 @@ class UserController extends Controller
             $user->expires_at = null;
             $user->save();
 
-            echo "resetPassword called44444444444444";
             return response()->json(['message' => 'password reset successfully'], 200);
-        } catch (Exception  $e) {
-            echo "resetPassword called55555555555555555";
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json(['errors' => $e->errors()], 422);
+        } catch (Exception $e) {
+            Log::error('Reset password error: ' . $e->getMessage());
             return response()->json(['message' => 'server error'], 500);
         }
     }
