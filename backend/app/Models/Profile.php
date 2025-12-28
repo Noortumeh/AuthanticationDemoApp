@@ -13,6 +13,9 @@ class Profile extends Model
         'user_id',
         'bio',
         'phone',
+        'address',
+        'birthdate',
+        'image',
     ];
 
     public function user(){

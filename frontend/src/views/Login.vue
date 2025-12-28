@@ -47,12 +47,13 @@ const sendLoginData = async (email, password) => {
       });
       // Redirect to home page
       setTimeout(() => {
+        loading.value = false;
         window.location.href = "/";
       }, 2000);
     }else {
       toast.error("Login failed. Please try again.");
+      loading.value = false;
     }
-    loading.value = false;
   } catch (err) {
     console.error("Login failed", err);
     error.value = "Failed to login";
