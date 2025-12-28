@@ -33,10 +33,17 @@ onMounted(async () => {
   <div class="max-w-md mx-auto mt-20 p-6 bg-white rounded-lg shadow-md">
     <h2 class="text-2xl font-bold mb-6 text-center">Profile</h2>
     <div v-if="data">
+      <div class="mb-4 flex justify-center" >
+        <div v-if="data.image">
+          <img :src="data.image" alt="Profile Image" class="mt-2 w-32 h-32 object-cover rounded-full" />
+        </div>
+      </div>
       <p class="mb-4"><strong>Name:</strong> {{ data.name }}</p>
       <p class="mb-4"><strong>Email:</strong> {{ data.email }}</p>
       <p class="mb-4"><strong>Bio:</strong> {{ data.bio }}</p>
       <p class="mb-4"><strong>Phone:</strong> {{ data.phone }}</p>
+      <p class="mb-4"><strong>Address:</strong> {{ data.address }}</p>
+      <p class="mb-4"><strong>Date of Birth:</strong> {{ data.birthdate }}</p>
     </div>
     <div v-else-if="error" class="text-red-500">
       {{ error }}
@@ -46,8 +53,7 @@ onMounted(async () => {
     </div>
   </div>
   <
-  <div class="mt-5 text-center">
-    <ProfileDialog />
+  <div class="text-center">
+    <ProfileDialog :data="data" />
   </div>
 </template>
-``
