@@ -51,6 +51,10 @@ const handleRegister = async (name, email, password, password_confirmation) => {
     toast.success("Registration successful!", {
       timeout: 2000,
     });
+    setTimeout(() => {
+      loading.value = false;
+      window.location.href = "/login";
+    }, 2000);
     console.log("Registration successful:", data.value);
   } catch (err) {
     console.error("Registration failed", err);
