@@ -29,6 +29,9 @@ class ProfileController extends Controller
         $data = $request->validate([
             'bio' => 'nullable|string',
             'phone' => 'nullable|string',
+            'address' => 'nullable|string',
+            'birthdate' => 'nullable|date',
+            'image' => 'nullable|string',
         ]);
 
         $data['user_id'] = $user->id;

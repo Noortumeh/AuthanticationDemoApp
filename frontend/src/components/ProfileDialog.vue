@@ -5,9 +5,17 @@ import {
   TransitionChild,
   Dialog,
   DialogPanel,
-  DialogTitle,
 } from "@headlessui/vue";
 import { useToast } from "vue-toastification";
+import AuthForm from "./AuthForm.vue";
+import { defineProps } from "vue";
+
+const props = defineProps({
+  data: {
+    type: Object,
+    required: false,
+  },
+});
 
 const toast = useToast();
 const token = localStorage.getItem("token");
@@ -21,8 +29,43 @@ function openModal() {
   isOpen.value = true;
 }
 
-const addProfileData = async (bio, phone) => {
-  console.log('bio: ' +bio);
+const fields = [
+  {
+    name: "bio",
+    id: "bio",
+    type: "text",
+    placeholder: "Enter your bio",
+  },
+  {
+    name: "phone",
+    id: "phone",
+    type: "text",
+    placeholder: "Enter your phone number",
+  },
+  {
+    name: "address",
+    id: "address",
+    type: "text",
+    placeholder: "Enter your address",
+  },
+  {
+    name: 'Date Of Birth',
+    id: 'birthdate',
+    type: 'date',
+    placeholder: 'Enter your date of birth',
+  },
+  {
+    name: 'image',
+    id: 'image',
+    type: 'text',
+    placeholder: 'Upload your profile image',
+  }
+];
+
+const loading = ref(false); 
+
+const addProfileData = async (bio, phone, address, birthdate, image) => {
+  console.log(birthdate);
   try {
     const res = await fetch("http://127.0.0.1:8000/api/profile", {
       method: "POST",
@@ -32,7 +75,7 @@ const addProfileData = async (bio, phone) => {
         Authorization: `Bearer ${token}`,
         "access-control-allow-credentials": "true",
       },
-      body: JSON.stringify({ bio, phone }),
+      body: JSON.stringify({bio, phone, address, birthdate, image }),
     });
     const result = await res.json();
     toast.success("Profile updated successfully!", {
@@ -40,9 +83,9 @@ const addProfileData = async (bio, phone) => {
     });
     console.log("Profile updated:", result);
     closeModal();
-    setTimeout(()=>{
-      window.location.reload();
-    },2000);
+    // setTimeout(()=>{
+    //   window.location.reload();
+    // },2000);
   } catch (err) {
     console.error("Failed to update profile", err);
     toast.error("Failed to update profile. Please try again.");
@@ -58,7 +101,7 @@ const addProfileData = async (bio, phone) => {
       @click="openModal"
       class="rounded-md bg-black/20 px-4 py-2 text-sm font-medium text-white hover:bg-black/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75"
     >
-      Add information
+      {{ props.data ? "Edit Profile Info" : "Add Profile Info" }}
     </button>
   </div>
   <TransitionRoot appear :show="isOpen" as="template">
@@ -91,57 +134,18 @@ const addProfileData = async (bio, phone) => {
             <DialogPanel
               class="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all"
             >
-              <DialogTitle
-                as="h3"
-                class="text-lg font-medium leading-6 text-gray-900"
-              >
-                Add Profile Information
-              </DialogTitle>
-
-              <form
-                @submit.prevent="
-                  addProfileData(
-                    $event.target.bio.value,
-                    $event.target.phone.value
-                  )
-                "
-                class="mt-4"
-              >
-                <div class="mb-4">
-                  <label
-                    for="bio"
-                    class="block text-sm font-medium text-gray-700 mb-1"
-                    >Bio</label
-                  >
-                  <input
-                    type="text"
-                    id="bio"
-                    class="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Enter your bio"
-                  />
-                </div>
-                <div class="mb-4">
-                  <label
-                    for="phone"
-                    class="block text-sm font-medium text-gray-700 mb-1"
-                    >Phone</label
-                  >
-                  <input
-                    type="text"
-                    id="phone"
-                    class="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Enter your phone number"
-                  />
-                </div>
-                <div class="mt-4">
-                  <button
-                    type="submit"
-                    class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                  >
-                    Save
-                  </button>
-                </div>
-              </form>
+              <AuthForm
+                :fields="fields"
+                formTitle="Add Profile Info"
+                :loading="loading"
+                :defaultValues="props.data || {}"
+                @submitForm="addProfileData(
+                  $event.bio,
+                  $event.phone,
+                  $event.address,
+                  $event.birthdate,
+                  $event.image
+                )" />
             </DialogPanel>
           </TransitionChild>
         </div>
