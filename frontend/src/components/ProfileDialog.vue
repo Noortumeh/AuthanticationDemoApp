@@ -49,33 +49,33 @@ const fields = [
     placeholder: "Enter your address",
   },
   {
-    name: 'Date Of Birth',
-    id: 'birthdate',
-    type: 'date',
-    placeholder: 'Enter your date of birth',
+    name: "Date Of Birth",
+    id: "birthdate",
+    type: "date",
+    placeholder: "Enter your date of birth",
   },
   {
-    name: 'image',
-    id: 'image',
-    type: 'text',
-    placeholder: 'Upload your profile image',
-  }
+    name: "image",
+    id: "image",
+    type: "text",
+    placeholder: "Upload your profile image",
+  },
 ];
 
-const loading = ref(false); 
+const loading = ref(false);
 
 const addProfileData = async (bio, phone, address, birthdate, image) => {
-  console.log(birthdate);
+  console.log('Adding profile with:', bio, phone, address, birthdate, image);
   try {
     const res = await fetch("http://127.0.0.1:8000/api/profile", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Accept": "application/json",
+        Accept: "application/json",
         Authorization: `Bearer ${token}`,
         "access-control-allow-credentials": "true",
       },
-      body: JSON.stringify({bio, phone, address, birthdate, image }),
+      body: JSON.stringify({ bio, phone, address, birthdate, image }),
     });
     const result = await res.json();
     toast.success("Profile updated successfully!", {
@@ -83,9 +83,42 @@ const addProfileData = async (bio, phone, address, birthdate, image) => {
     });
     console.log("Profile updated:", result);
     closeModal();
-    // setTimeout(()=>{
-    //   window.location.reload();
-    // },2000);
+    setTimeout(()=>{
+      window.location.reload();
+    },2000);
+  } catch (err) {
+    console.error("Failed to update profile", err);
+    toast.error("Failed to update profile. Please try again.");
+    return;
+  }
+};
+
+const updateProfileData = async (bio, phone, address, birthdate, image) => {
+  console.log('Updating profile with:', bio, phone, address, birthdate, image);
+  try {
+    const res = await fetch("http://127.0.0.1:8000/api/update-profile", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+        "access-control-allow-credentials": "true",
+      },
+      body: JSON.stringify({ bio, phone, address, birthdate, image }),
+    });
+    const result = await res.json();
+    if (res.ok) {
+      toast.success("Profile updated successfully!", {
+        timeout: 2000,
+      });
+      console.log("Profile updated:", result);
+      closeModal();
+      setTimeout(()=>{
+        window.location.reload();
+      },2000);
+    } else {
+      throw new Error(result.error || "Failed to update profile");
+    }
   } catch (err) {
     console.error("Failed to update profile", err);
     toast.error("Failed to update profile. Please try again.");
@@ -138,14 +171,25 @@ const addProfileData = async (bio, phone, address, birthdate, image) => {
                 :fields="fields"
                 formTitle="Add Profile Info"
                 :loading="loading"
-                :defaultValues="props.data || {}"
-                @submitForm="addProfileData(
-                  $event.bio,
-                  $event.phone,
-                  $event.address,
-                  $event.birthdate,
-                  $event.image
-                )" />
+                :defaultValues="data || {}"
+                @submitForm="
+                  !data
+                    ? addProfileData(
+                        $event.bio,
+                        $event.phone,
+                        $event.address,
+                        $event.birthdate,
+                        $event.image
+                      )
+                    : updateProfileData(
+                        $event.bio,
+                        $event.phone,
+                        $event.address,
+                        $event.birthdate,
+                        $event.image
+                      )
+                "
+              />
             </DialogPanel>
           </TransitionChild>
         </div>
