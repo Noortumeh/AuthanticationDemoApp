@@ -10,7 +10,7 @@ Route::get('/user', function (Request $request) {
 // User Routes
 Route::post('/register', [UserController::class, 'register']);
 Route::post('/login',[UserController::class, 'login']);
-Route::middleware('auth:sanctum')->post('/logout', [UserController::class, 'logout']);
+Route::post('/logout', [UserController::class, 'logout'])->middleware('auth:sanctum');
 // Password Reset Routes
 Route::post('/forgotpassword', [UserController::class, 'forgotPassword']);
 Route::post('/resetpassword', [UserController::class, 'resetPassword']);
@@ -18,3 +18,4 @@ Route::post('/resetpassword', [UserController::class, 'resetPassword']);
 //Profile Routes
 Route::get('/profile', [ProfileController::class, 'show'])->middleware('auth:sanctum');
 Route::post('/profile', [ProfileController::class, 'addProfile'])->middleware('auth:sanctum');
+Route::put('/update-profile', [ProfileController::class, 'updateProfile'])->middleware('auth:sanctum');

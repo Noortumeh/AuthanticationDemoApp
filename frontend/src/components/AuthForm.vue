@@ -29,7 +29,7 @@ const emit = defineEmits(["submitForm"]);
 
 const form = reactive({});
 props.fields.forEach((field) => {
-  form[field.id] = "";
+  form[field.id] = props.defaultValues[field.id] || "";
 });
 
 const handleSubmit = () => {
