@@ -19,3 +19,5 @@ Route::post('/resetpassword', [UserController::class, 'resetPassword']);
 Route::get('/profile', [ProfileController::class, 'show'])->middleware('auth:sanctum');
 Route::post('/profile', [ProfileController::class, 'addProfile'])->middleware('auth:sanctum');
 Route::put('/update-profile', [ProfileController::class, 'updateProfile'])->middleware('auth:sanctum');
+
+Route::get('/welcome', [ProfileController::class, 'welcome']);
