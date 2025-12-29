@@ -18,9 +18,7 @@ class ProfileProvider extends ServiceProvider implements DeferrableProvider
         // App::bind('welcome', function () {
         //     return new HelperServices();
         // });
-        App::bind(HelperServices::class, function () {
-            return new HelperServices();
-        });
+        
         App::bind(ProfileService::class, function () {
             return new ProfileService();
         });
