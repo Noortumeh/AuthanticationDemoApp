@@ -11,11 +11,10 @@ class HelperServices
 
     public function responseSuccess($data, $message = "Operation successful")
     {
-        return response()->json([
-            'success' => true,
-            'message' => $message,
-            'data' => $data
-        ], 200);
+        return response()->json(
+            $data,
+            200
+        );
     }
 
     public function responseError($message = "An error occurred", $code = 500)
