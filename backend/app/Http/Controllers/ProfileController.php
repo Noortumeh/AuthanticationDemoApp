@@ -21,7 +21,7 @@ class ProfileController extends Controller
     {
         $user = Auth::user();
         if (!$user) {
-            return HelperFacades::responseSuccess('Unauthorized', 401);
+            return HelperFacades::responseError('Unauthorized', 401);
         }
         $profile = $this->profileService->getProfileWithUserData($user);
         return HelperFacades::responseSuccess($profile, 'Profile fetched successfully');
@@ -31,7 +31,7 @@ class ProfileController extends Controller
     {
         $user = Auth::user();
         if (!$user) {
-            return HelperFacades::responseSuccess('Unauthorized', 401);
+            return HelperFacades::responseError('Unauthorized', 401);
         }
         return $this->profileService->addProfile($user, $request);
     }
@@ -40,7 +40,7 @@ class ProfileController extends Controller
     {
         $user = Auth::user();
         if (!$user) {
-            return HelperFacades::responseSuccess('Unauthorized', 401);
+            return HelperFacades::responseError('Unauthorized', 401);
         }
         return $this->profileService->updateProfile($user, $request);
     }

@@ -2,9 +2,6 @@
 
 namespace App\Services;
 
-use Illuminate\Container\Attributes\Auth;
-use Symfony\Component\HttpFoundation\Request;
-
 class HelperServices
 {
     public function welcomeMessage($name)
