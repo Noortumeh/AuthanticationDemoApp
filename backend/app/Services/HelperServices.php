@@ -4,11 +4,6 @@ namespace App\Services;
 
 class HelperServices
 {
-    public function welcomeMessage($name)
-    {
-        return "Welcome, " . $name . "!";
-    }
-
     public function responseSuccess($data, $message = "Operation successful")
     {
         return response()->json(
