@@ -31,14 +31,16 @@ class ProfileService
         }
     }
 
-    public function updateProfile($user, ProfileRequest $request){
+    public function updateProfile($user, ProfileRequest $request)
+    {
         try {
             $data = $request->validated();
-            $profile = $user->profile;
+            $profile = $user->profile()->first();
             if (!$profile) {
                 return response()->json(['error' => 'Profile not found'], 404);
             }
             $profile->update($data);
+            $profile->refresh();
             return response()->json($profile, 200);
         } catch (Exception $e) {
             return response()->json(['error' => 'Update failed'], 500);

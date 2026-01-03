@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\AdminServices;
 use Illuminate\Http\Request;
+use App\Http\Requests\{ProfileRequest, UserRequest};
+use App\Services\AdminServices;
 
 class AdminController extends Controller
 {
@@ -21,5 +22,32 @@ class AdminController extends Controller
     public function getUserData(Request $request)
     {
         return $this->admin->getUserData($request);
+    }
+
+    public function createUser(UserRequest $request)
+    {
+        return $this->admin->createUser($request);
+    }
+
+    public function deleteUser($id)
+    {
+        return $this->admin->deleteUser($id);
+    }
+
+
+    //Profile APIs
+    public function addUserProfile(ProfileRequest $request, $id)
+    {
+        return $this->admin->addUserProfile($request, $id);
+    }
+
+    public function updateUserProfile(ProfileRequest $request, $id)
+    {
+        return $this->admin->updateUserProfile($request, $id);
+    }
+    
+    public function deleteUserProfile($id)
+    {
+        return $this->admin->deleteUserProfile($id);
     }
 }
