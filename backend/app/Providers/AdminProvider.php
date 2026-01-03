@@ -2,9 +2,9 @@
 
 namespace App\Providers;
 
-use App\Services\AdminServices;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\ServiceProvider;
+use App\Services\{AdminServices, ProfileService};
 
 class AdminProvider extends ServiceProvider
 {
@@ -14,7 +14,7 @@ class AdminProvider extends ServiceProvider
     public function register(): void
     {
         App::bind(AdminServices::class, function(){
-            return new AdminServices();
+            return new AdminServices(new ProfileService);
         });
     }
 

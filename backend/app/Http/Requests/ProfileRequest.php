@@ -10,6 +10,13 @@ class ProfileRequest extends FormRequest
     {
         return true;
     }
+    // this function for postman PUT request to accept multipart data
+    public function prepareForValidation()
+    {
+        if ($this->isJson()) {
+            $this->merge($this->json()->all());
+        }
+    }
 
     public function rules(): array
     {
