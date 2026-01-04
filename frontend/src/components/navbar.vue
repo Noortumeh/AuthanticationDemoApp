@@ -35,32 +35,14 @@
                 :to="item.href"
                 :class="[
                   item.current
-                    ? 'bg-gray-950/50 text-white'
-                    : 'text-gray-300 hover:bg-white/5 hover:text-white',
+                    ? 'bg-blue-500 text-white'
+                    : 'text-white hover:bg-blue-400 hover:text-white',
                   'rounded-md px-3 py-2 text-sm font-medium',
                 ]"
                 :aria-current="item.current ? 'page' : undefined"
               >
                 {{ item.name }}
               </RouterLink>
-              <RouterLink
-                to="/login"
-                :class="[
-                  active ? 'bg-white/5 outline-hidden' : '',
-                  'block px-4 py-2 text-sm text-gray-300',
-                  'hover:bg-white/5 hover:text-white',
-                ]"
-                >Login</RouterLink
-              >
-              <RouterLink
-                to="/register"
-                :class="[
-                  active ? 'bg-white/5 outline-hidden' : '',
-                  'block px-4 py-2 text-sm text-gray-300',
-                  'hover:bg-white/5 hover:text-white',
-                ]"
-                >Register</RouterLink
-              >
             </div>
           </div>
         </div>
@@ -68,7 +50,7 @@
           class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0"
         >
           <!-- Profile dropdown -->
-          <Menu as="div" class="relative ml-3">
+          <Menu v-if="token" as="div" class="relative ml-3">
             <MenuButton
               class="relative flex rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
             >
@@ -102,7 +84,7 @@
                     >Your profile</RouterLink
                   >
                 </MenuItem>
-                <MenuItem v-slot="{ active }" >
+                <MenuItem v-slot="{ active }">
                   <button
                     @click="signout"
                     :class="[
@@ -151,29 +133,51 @@ import {
   MenuItem,
   MenuItems,
 } from "@headlessui/vue";
-import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/vue/24/outline";
-import { RouterLink } from "vue-router";
+import { Bars3Icon, XMarkIcon } from "@heroicons/vue/24/outline";
+import { RouterLink, useRoute } from "vue-router";
 import { useToast } from "vue-toastification";
+import { computed, ref } from "vue";
 
-const navigation = [{ name: "Home", href: "/", current: true }];
-
-const token = localStorage.getItem("token");
+const route = useRoute();
+const token = ref(localStorage.getItem("token"));
+const role = ref(localStorage.getItem("role"));
+const navigation = computed(() => [
+  { name: "Home", href: "/", current: route.path === "/" },
+  ...(!token.value
+    ? [
+        {
+          name: "Register",
+          href: "/register",
+          current: route.path === "/register",
+        },
+        { name: "Login", href: "/login", current: route.path === "/login" },
+      ]
+    : []),
+  ...(role.value === "admin"
+    ? [
+        {
+          name: "Dashboard",
+          href: "/dashboard",
+          current: route.path === "/dashboard" || route.path.startsWith('/dashboard'),
+        },
+      ]
+    : []),
+]);
 const toast = useToast();
 
 const signout = async () => {
-  console.log("token :", token);
   try {
     const res = await fetch("http://127.0.0.1:8000/api/logout", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        'access-control-allow-credentials': 'true',
-        Authorization: `Bearer ${token}`,
+        "access-control-allow-credentials": "true",
+        Authorization: `Bearer ${token.value}`,
       },
     });
     if (res.ok) {
-      console.log("Logout successful");
       localStorage.removeItem("token");
+      token.value = null; // Update the ref
       toast.success("Logout successful!", {
         timeout: 2000,
       });

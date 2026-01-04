@@ -22,9 +22,6 @@ const props = defineProps({
   },
 });
 
-console.log("defaultValues: ");
-console.log(props.defaultValues);
-
 const emit = defineEmits(["submitForm"]);
 
 const form = reactive({});
@@ -54,6 +51,7 @@ const handleSubmit = () => {
         :type="field.type"
         :placeholder="field.placeholder"
         :id="field.id"
+        :required="field.required"
         class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
       >
     </div>

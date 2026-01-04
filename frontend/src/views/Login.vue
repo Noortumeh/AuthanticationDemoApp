@@ -1,5 +1,5 @@
 <script setup>
-import AuthForm from "@/components/AuthForm.vue";
+import Form from "@/components/Form.vue";
 import { ref } from "vue";
 import { useToast } from "vue-toastification";
 
@@ -41,6 +41,7 @@ const sendLoginData = async (email, password) => {
       data.value = await res.json();
       // Store the token in localStorage
       localStorage.setItem("token", data.value.access_token);
+      localStorage.setItem("role", data.value.role);
       console.log("Login successful:", data.value);
       toast.success("Login successful!", {
         timeout: 2000,
@@ -64,7 +65,7 @@ const sendLoginData = async (email, password) => {
 };
 </script>
 <template>
-  <AuthForm
+  <Form
     :fields="fields"
     formTitle="Login"
     @submitForm="sendLoginData($event.email, $event.password)"

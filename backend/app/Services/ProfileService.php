@@ -2,18 +2,25 @@
 
 namespace App\Services;
 
+use App\Facades\HelperFacades;
 use App\Http\Requests\ProfileRequest;
-use App\Models\Profile;
+use App\Http\Resources\UserResource;
+use App\Models\{Profile, User};
 use Exception;
 
 class ProfileService
 {
     public function getProfileWithUserData($user)
     {
-        $profile = $user->profile;
-        $profile['email'] = $user->email;
-        $profile['name'] = $user->name;
-        return $profile;
+        try {
+            $user = User::with('profile')->findOrFail($user->id);
+            if (!$user) {
+                return HelperFacades::responseError('User Profile Not Found', 404);
+            }
+            return HelperFacades::responseSuccess(new UserResource($user));
+        } catch (Exception $e) {
+            return response()->json(['error' => 'User Find Faild', $e], 500);
+        }
     }
 
     public function addProfile($user, ProfileRequest $request)
