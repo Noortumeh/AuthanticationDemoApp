@@ -1,6 +1,10 @@
 <script setup>
 import { useToast } from "vue-toastification";
+import ConfirmDialog from "./ConfirmDialog.vue";
+import { ref } from "vue";
 
+const showConfirm = ref(false);
+const deleteId = ref(null);
 const props = defineProps({
   columns: {
     type: Array,
@@ -21,9 +25,10 @@ const props = defineProps({
 const toast = useToast();
 const token = localStorage.getItem("token");
 
-const handleDeleteUser = async (id) => {
+const handleDeleteUser = async () => {
+  showConfirm.value = false
   try {
-    const res = await fetch(`http://127.0.0.1:8000/api/admin/user/${id}`, {
+    const res = await fetch(`http://127.0.0.1:8000/api/admin/user/${deleteId.value}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -81,7 +86,7 @@ const handleDeleteUser = async (id) => {
               {{ action.label }}
             </RouterLink> -->
             <button
-              @click="handleDeleteUser(row.id)"
+              @click="() => { deleteId = row.id; showConfirm = true }"
               class="px-3 py-1.5 mr-1 whitespace-nowrap bg-red-200 hover:bg-red-400 rounded-2xl hover:cursor-pointer"
             >
               Delete
@@ -96,5 +101,12 @@ const handleDeleteUser = async (id) => {
         </tr>
       </tbody>
     </table>
+    <ConfirmDialog
+      :show="showConfirm"
+      title="Confirm Delete"
+      :message="'Are you sure you want to delete user with ID ' + deleteId + '?'"
+      @confirm="handleDeleteUser"
+      @cancel="showConfirm = false"
+    />
   </div>
 </template>

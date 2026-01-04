@@ -34,6 +34,13 @@ const fields = [
     placeholder: "Confirm your password",
     required: true
   },
+  {
+    name: "Role",
+    id: "role",
+    type: "text",
+    placeholder: "Add The Role (Admin/User)",
+    required: false
+  },
 ];
 
 const loading = ref(false);
@@ -43,7 +50,8 @@ const handleAddNewUser = async (
   name,
   email,
   password,
-  password_confirmation
+  password_confirmation,
+  role
 ) => {
   const data = ref(null);
   const error = ref(null);
@@ -56,7 +64,7 @@ const handleAddNewUser = async (
         Accept: "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ name, email, password, password_confirmation }),
+      body: JSON.stringify({ name, email, password, password_confirmation, role }),
     });
     data.value = await res.json();
     if (res.ok) {
@@ -89,7 +97,8 @@ const handleAddNewUser = async (
         $event.name,
         $event.email,
         $event.password,
-        $event.password_confirmation
+        $event.password_confirmation,
+        $event.role
       )
     "
     :loading="loading"
