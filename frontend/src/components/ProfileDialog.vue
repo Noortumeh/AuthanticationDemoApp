@@ -7,7 +7,7 @@ import {
   DialogPanel,
 } from "@headlessui/vue";
 import { useToast } from "vue-toastification";
-import AuthForm from "./AuthForm.vue";
+import Form from "./Form.vue";
 import { defineProps } from "vue";
 
 const props = defineProps({
@@ -15,7 +15,11 @@ const props = defineProps({
     type: Object,
     required: false,
   },
+  api:{
+    type: String
+  }
 });
+console.log(props.api);
 
 const toast = useToast();
 const token = localStorage.getItem("token");
@@ -67,7 +71,7 @@ const loading = ref(false);
 const addProfileData = async (bio, phone, address, birthdate, image) => {
   console.log('Adding profile with:', bio, phone, address, birthdate, image);
   try {
-    const res = await fetch("http://127.0.0.1:8000/api/profile", {
+    const res = await fetch(props.api?props.api:"http://127.0.0.1:8000/api/profile", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -96,7 +100,7 @@ const addProfileData = async (bio, phone, address, birthdate, image) => {
 const updateProfileData = async (bio, phone, address, birthdate, image) => {
   console.log('Updating profile with:', bio, phone, address, birthdate, image);
   try {
-    const res = await fetch("http://127.0.0.1:8000/api/update-profile", {
+    const res = await fetch(props.api ? props.api : "http://127.0.0.1:8000/api/update-profile", {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -167,7 +171,7 @@ const updateProfileData = async (bio, phone, address, birthdate, image) => {
             <DialogPanel
               class="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all"
             >
-              <AuthForm
+              <Form
                 :fields="fields"
                 formTitle="Add Profile Info"
                 :loading="loading"

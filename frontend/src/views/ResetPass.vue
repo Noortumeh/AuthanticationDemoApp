@@ -1,5 +1,5 @@
 <script setup>
-import AuthForm from "@/components/AuthForm.vue";
+import Form from "@/components/Form.vue";
 import { ref } from "vue";
 import { useToast } from "vue-toastification";
 
@@ -41,19 +41,21 @@ const handleResetPass = async (
   new_password_confirmation,
   code
 ) => {
-    console.log(email,
-  new_password,
-  new_password_confirmation,
-  code);
-    loading.value = true;
+  console.log(email, new_password, new_password_confirmation, code);
+  loading.value = true;
   try {
     const res = await fetch("http://127.0.0.1:8000/api/resetpassword", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Accept": "application/json",
+        Accept: "application/json",
       },
-      body: JSON.stringify({ email, new_password, new_password_confirmation, code }),
+      body: JSON.stringify({
+        email,
+        new_password,
+        new_password_confirmation,
+        code,
+      }),
     });
     if (res.ok) {
       data.value = await res.json();
@@ -66,7 +68,9 @@ const handleResetPass = async (
       }, 2000);
     } else if (res.status === 422) {
       const errorData = await res.json();
-      const errors = errorData.errors ? Object.values(errorData.errors).flat().join(', ') : 'Validation failed';
+      const errors = errorData.errors
+        ? Object.values(errorData.errors).flat().join(", ")
+        : "Validation failed";
       toast.error(errors);
     } else {
       toast.error("Request failed. Please try again.");
@@ -82,10 +86,17 @@ const handleResetPass = async (
 </script>
 
 <template>
-  <AuthForm
+  <Form
     :fields="fields"
     formTitle="Reset Password"
-    @submitForm="handleResetPass($event.email, $event.new_password, $event.new_password_confirmation, $event.code)"
+    @submitForm="
+      handleResetPass(
+        $event.email,
+        $event.new_password,
+        $event.new_password_confirmation,
+        $event.code
+      )
+    "
     :loading="loading"
   />
 </template>

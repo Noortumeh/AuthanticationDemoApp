@@ -1,5 +1,5 @@
 <script setup>
-import AuthForm from "@/components/AuthForm.vue";
+import Form from "@/components/Form.vue";
 import { ref } from "vue";
 import { useToast } from "vue-toastification";
 
@@ -49,7 +49,7 @@ const sendForgetPass = async (email) => {
 </script>
 
 <template>
-  <AuthForm
+  <Form
     :fields="fields"
     formTitle="Forgot Password"
     @submitForm="sendForgetPass($event.email)"

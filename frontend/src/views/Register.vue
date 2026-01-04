@@ -1,5 +1,5 @@
 <script setup>
-import AuthForm from "@/components/AuthForm.vue";
+import Form from "@/components/Form.vue";
 import { ref } from "vue";
 import { useToast } from "vue-toastification";
 
@@ -66,7 +66,7 @@ const handleRegister = async (name, email, password, password_confirmation) => {
 </script>
 
 <template>
-  <AuthForm
+  <Form
     :fields="fields"
     formTitle="Register"
     @submitForm="handleRegister($event.name, $event.email, $event.password, $event.password_confirmation)"

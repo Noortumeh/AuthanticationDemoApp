@@ -18,8 +18,8 @@ onMounted(async () => {
         Authorization: `Bearer ${token}`,
       },
     });
-    data.value = await res.json();
-    console.log("Profile data fetched:", data.value);
+    const result = await res.json();
+    data.value = result.original;
   } catch (err) {
     console.error("Failed to fetch profile data", err);
     error.value = "Failed to fetch profile data";
@@ -40,10 +40,10 @@ onMounted(async () => {
       </div>
       <p class="mb-4"><strong>Name:</strong> {{ data.name }}</p>
       <p class="mb-4"><strong>Email:</strong> {{ data.email }}</p>
-      <p class="mb-4"><strong>Bio:</strong> {{ data.bio }}</p>
-      <p class="mb-4"><strong>Phone:</strong> {{ data.phone }}</p>
-      <p class="mb-4"><strong>Address:</strong> {{ data.address }}</p>
-      <p class="mb-4"><strong>Date of Birth:</strong> {{ data.birthdate }}</p>
+      <p class="mb-4"><strong>Bio:</strong> {{ data.profile?.bio }}</p>
+      <p class="mb-4"><strong>Phone:</strong> {{ data.profile?.phone }}</p>
+      <p class="mb-4"><strong>Address:</strong> {{ data.profile?.address }}</p>
+      <p class="mb-4"><strong>Date of Birth:</strong> {{ data.profile?.birthdate }}</p>
     </div>
     <div v-else-if="error" class="text-red-500">
       {{ error }}
@@ -54,6 +54,6 @@ onMounted(async () => {
   </div>
   <
   <div class="text-center">
-    <ProfileDialog :data="data" />
+    <ProfileDialog :data="data?.profile" />
   </div>
 </template>

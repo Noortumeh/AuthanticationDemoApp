@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\{Auth, Mail, Log};
+use Illuminate\Support\Facades\{Auth, Log, Mail};
 use App\Models\User;
 use App\Mail\VerificationCodeMail;
 use App\Http\Requests\UserRequest;
@@ -43,6 +43,7 @@ class UserController extends Controller
         return response()->json([
             'access_token' => $token,
             'token_type' => 'Bearer',
+            'role' => $user->role,
         ]);
     }
 
