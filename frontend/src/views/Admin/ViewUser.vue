@@ -29,7 +29,11 @@ onMounted(async () => {
       }
     );
     data.value = await res.json();
-    console.log("User data fetched:", data.value);
+    if (res.ok) {
+      console.log("User data fetched:", data.value);
+    } else {
+      error.value = data.value.error || data.value.message || 'Failed to Fetch User Data';
+    }
     loading.value = false;
   } catch (err) {
     console.error("Failed to fetch User data", err);
@@ -62,7 +66,7 @@ const handleDeleteProfile = async () => {
       setTimeout(() => {
         window.location.reload();
       }, 2000);
-    }else{
+    } else {
       toast.error(result.message);
     }
   } catch (err) {

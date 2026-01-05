@@ -35,9 +35,12 @@ class AdminServices
     public function getUserData(Request $request)
     {
         try {
+            if(!User::find($request->id)){
+                 return response()->json(['error' => 'User Not Found'], 404);
+            }
             $user = User::with('profile')->findOrFail($request->id);
             if (!$user) {
-                return HelperFacades::responseError('User Not Found', 404);
+                return HelperFacades::responseError('User Profile Not Found', 404);
             }
             return HelperFacades::responseSuccess(new UserResource($user));
         } catch (Exception $e) {

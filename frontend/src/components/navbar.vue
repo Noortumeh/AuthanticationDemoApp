@@ -1,7 +1,7 @@
 <template>
   <Disclosure
     as="nav"
-    class="relative bg-gray-800/50 after:pointer-events-none after:absolute after:inset-x-0 after:bottom-0 after:h-px after:bg-white/10"
+    class="relative bg-blue-100 after:pointer-events-none after:absolute after:inset-x-0 after:bottom-0 after:h-px after:bg-white/10"
     v-slot="{ open }"
   >
     <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
@@ -36,7 +36,7 @@
                 :class="[
                   item.current
                     ? 'bg-blue-500 text-white'
-                    : 'text-white hover:bg-blue-400 hover:text-white',
+                    : 'text-black hover:bg-blue-400 hover:text-white',
                   'rounded-md px-3 py-2 text-sm font-medium',
                 ]"
                 :aria-current="item.current ? 'page' : undefined"
