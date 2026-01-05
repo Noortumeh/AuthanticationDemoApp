@@ -19,7 +19,6 @@ const props = defineProps({
     type: String
   }
 });
-console.log(props.api);
 
 const toast = useToast();
 const token = localStorage.getItem("token");
@@ -136,7 +135,7 @@ const updateProfileData = async (bio, phone, address, birthdate, image) => {
     <button
       type="button"
       @click="openModal"
-      class="rounded-md bg-black/20 px-4 py-2 text-sm font-medium text-white hover:bg-black/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75"
+      class="rounded-md bg-blue-400 px-4 mt-2 py-2 text-sm font-medium text-white hover:bg-blue-500 hover:cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75"
     >
       {{ props.data ? "Edit Profile Info" : "Add Profile Info" }}
     </button>

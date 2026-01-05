@@ -13,9 +13,9 @@ class ProfileService
     public function getProfileWithUserData($user)
     {
         try {
-            $user = User::with('profile')->findOrFail($user->id);
-            if (!$user) {
-                return HelperFacades::responseError('User Profile Not Found', 404);
+            $user = User::with('profile')->find($user->id);
+            if (!$user->profile) {
+                return HelperFacades::responseError('You Dont Have A Profile Yet, Add Your Information Data.', 404);
             }
             return HelperFacades::responseSuccess(new UserResource($user));
         } catch (Exception $e) {

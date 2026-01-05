@@ -16,6 +16,7 @@ class ProfileResource extends JsonResource
             'bio' => $this->bio,
             'address' => $this->address,
             'birthdate' => $this->birthdate,
+            'image' => $this->image,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];
