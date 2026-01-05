@@ -42,9 +42,9 @@ onMounted(async () => {
     <h2 class="text-2xl font-bold mb-6 text-center">Profile</h2>
     <div v-if="data">
       <div class="mb-4 flex justify-center">
-        <div v-if="data.image">
+        <div v-if="data.profile?.image">
           <img
-            :src="data.image"
+            :src="data.profile?.image"
             alt="Profile Image"
             class="mt-2 w-32 h-32 object-cover rounded-full"
           />
