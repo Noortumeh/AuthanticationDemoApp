@@ -12,7 +12,7 @@ Route::middleware(['auth:sanctum', 'CheckUserRole'])->group(function () {
         //
         Route::post('/users/{id}/profile', [AdminController::class, 'addUserProfile']);
         Route::put('/users/{id}/profile', [AdminController::class, 'updateUserProfile']);
-        Route::delete('/profile/{id}', [AdminController::class, 'deleteUserProfile']);
+        Route::delete('/users/{id}/profile', [AdminController::class, 'deleteUserProfile']);
 
     });
 });

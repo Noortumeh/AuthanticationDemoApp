@@ -106,7 +106,11 @@ class AdminServices
     public function deleteUserProfile($id)
     {
         try {
-            $profile = Profile::find($id);
+            $user = User::find($id);
+            if (!$user) {
+                return HelperFacades::responseError('User Not Found', 404);
+            }
+            $profile = $user->profile;
             if (!$profile) {
                 return HelperFacades::responseError('User Profile Not Found', 404);
             }
