@@ -177,7 +177,9 @@ const signout = async () => {
     });
     if (res.ok) {
       localStorage.removeItem("token");
-      token.value = null; // Update the ref
+      localStorage.removeItem("role");
+      token.value = null;
+      role.value = null;
       toast.success("Logout successful!", {
         timeout: 2000,
       });

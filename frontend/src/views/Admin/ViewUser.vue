@@ -1,4 +1,5 @@
 <script setup>
+import ConfirmDialog from "@/components/ConfirmDialog.vue";
 import ProfileDialog from "@/components/ProfileDialog.vue";
 import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
@@ -10,6 +11,8 @@ const token = localStorage.getItem("token");
 const data = ref(null);
 const error = ref(null);
 const loading = ref(false);
+
+const showConfirm = ref(false);
 
 onMounted(async () => {
   try {
@@ -36,11 +39,43 @@ onMounted(async () => {
     return;
   }
 });
+
+const handleDeleteProfile = async () => {
+  showConfirm.value = false;
+  try {
+    const res = await fetch(
+      `http://127.0.0.1:8000/api/admin/users/${path.params.id}/profile`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    const result = await res.json();
+    if (res.ok) {
+      toast.success("User Profile Deleted successfully!", {
+        timeout: 2000,
+      });
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
+    }else{
+      toast.error(result.message);
+    }
+  } catch (err) {
+    console.error("Failed to Delete User Profile", err);
+    toast.error("Failed to Delete User Profile. Please try again.");
+    return;
+  }
+};
 </script>
 <template>
   <div class="max-w-md mx-auto mt-20 p-6 bg-white rounded-lg shadow-md">
     <h2 class="text-2xl font-bold mb-6 text-center">Profile</h2>
-    <div v-if="data">
+    <div v-if="data?.profile">
       <div class="mb-4 flex justify-center">
         <div v-if="data.profile?.image">
           <img
@@ -66,16 +101,37 @@ onMounted(async () => {
       <p>Loading profile data...</p>
     </div>
     <div v-else>
-      <p>No User Data</p>
+      <p>This User Dosen't Have a Profile Data</p>
     </div>
-
   </div>
-  <div class="text-center mt-4">
+  <div class="text-center mt-4 flex justify-center content-around">
     <ProfileDialog
       :data="data?.profile"
       :api="
         'http://127.0.0.1:8000/api/admin/users/' + path.params.id + '/profile'
       "
+    />
+    <button
+      @click="
+        () => {
+          showConfirm = true;
+        }
+      "
+      :hidden="!data?.profile"
+      class="ml-2 rounded-md bg-red-200 hover:bg-red-400 px-4 mt-2 py-2 text-sm font-medium text-whit hover:cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75"
+    >
+      Delete Profile
+    </button>
+    <ConfirmDialog
+      :show="showConfirm"
+      title="Confirm Delete"
+      :message="
+        'Are you sure you want to delete this user profile with ID ' +
+        data?.id +
+        '?'
+      "
+      @confirm="handleDeleteProfile"
+      @cancel="showConfirm = false"
     />
   </div>
 </template>

@@ -24,12 +24,12 @@ const sendForgetPass = async (email) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Accept": "application/json",
+        Accept: "application/json",
       },
       body: JSON.stringify({ email }),
     });
+    data.value = await res.json();
     if (res.ok) {
-      data.value = await res.json();
       console.log(data.value);
       toast.success(data.value.message, {
         timeout: 2000,
@@ -37,6 +37,8 @@ const sendForgetPass = async (email) => {
       setTimeout(() => {
         window.location.href = "/reset-password";
       }, 2000);
+    } else {
+      toast.error(data.value.message);
     }
     loading.value = false;
   } catch (err) {
