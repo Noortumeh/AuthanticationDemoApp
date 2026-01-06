@@ -9,11 +9,9 @@ use App\Services\{HelperServices, ProfileService};
 
 class ProfileController extends Controller
 {
-    // protected $helperService;
     protected $profileService;
-    public function __construct(HelperServices $helperService, ProfileService $profileService)
+    public function __construct(ProfileService $profileService)
     {
-        // $this->helperService = $helperService;
         $this->profileService = $profileService;
     }
 
@@ -49,7 +47,7 @@ class ProfileController extends Controller
     public function welcome(HelperServices $helperService)
     {
         // $helperService = app('welcome');
-        
+
         // return response()->json(['message' => $helperService->welcomeMessage('User')]);
 
         // return response()->json(['message' => $this->helperService->welcomeMessage('User')]);
