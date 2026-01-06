@@ -1,12 +1,8 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\{ProfileController, UserController};
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
 // User Routes
 Route::post('/register', [UserController::class, 'register'])->middleware('throttle:limit5');
 Route::post('/login',[UserController::class, 'login'])->middleware('throttle:limit5');

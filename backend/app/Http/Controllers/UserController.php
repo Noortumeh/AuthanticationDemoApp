@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Mail\VerificationCodeMail;
 use App\Http\Requests\UserRequest;
 use Exception;
+use Illuminate\Validation\ValidationException;
 
 class UserController extends Controller
 {
@@ -62,18 +63,17 @@ class UserController extends Controller
 
     public function forgotPassword(Request $request)
     {
-        // Implementation for forgot password
         try {
             $user = User::where('email', $request->email)->first();
             if (!$user) {
                 return response()->json(['message' => 'user not found'], 404);
             }
-            // Generate and send verification code logic here
+
             $code = rand(100000, 999999);
             $user->verification_code = $code;
             $user->expires_at = now()->addMinutes(60);
             $user->save();
-            // Send email with the code
+
             Mail::to($user->email)->send(new VerificationCodeMail($code));
 
             return response()->json(['message' => 'verification code sent'], 200);
@@ -84,7 +84,6 @@ class UserController extends Controller
 
     public function resetPassword(Request $request)
     {
-        Log::info('resetPassword called');
         try {
             $request->validate([
                 'email' => 'required|string|email',
@@ -105,10 +104,9 @@ class UserController extends Controller
             $user->save();
 
             return response()->json(['message' => 'password reset successfully'], 200);
-        } catch (\Illuminate\Validation\ValidationException $e) {
+        } catch (ValidationException $e) {
             return response()->json(['errors' => $e->errors()], 422);
         } catch (Exception $e) {
-            Log::error('Reset password error: ' . $e->getMessage());
             return response()->json(['message' => 'server error'], 500);
         }
     }
