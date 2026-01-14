@@ -7,6 +7,7 @@ use App\Http\Requests\ProfileRequest;
 use App\Http\Resources\UserResource;
 use App\Models\{Profile, User};
 use Exception;
+use function PHPUnit\Framework\{containsEqual, equalTo};
 
 class ProfileService
 {
@@ -45,6 +46,16 @@ class ProfileService
             $profile = $user->profile()->first();
             if (!$profile) {
                 return response()->json(['error' => 'Profile not found'], 404);
+            }
+            $change = false;
+            foreach($data as $key => $value){
+                if(!$profile->$key === $value){
+                    $change=true;
+                    break;
+                }
+            }
+            if(!$change){
+                return response()->json(['error' => 'You didnt update any data'], 404);
             }
             $profile->update($data);
             $profile->refresh();
