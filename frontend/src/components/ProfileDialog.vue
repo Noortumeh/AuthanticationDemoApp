@@ -124,7 +124,7 @@ const updateProfileData = async (bio, phone, address, birthdate, image) => {
     }
   } catch (err) {
     console.error("Failed to update profile", err);
-    toast.error("Failed to update profile. Please try again.");
+    toast.error(err.message || "Failed to update profile. Please try again.");
     return;
   }
 };

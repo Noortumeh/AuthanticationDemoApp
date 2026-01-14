@@ -9,6 +9,7 @@ use App\Http\Resources\UserResource;
 use App\Models\{Profile, User};
 use App\Services\ProfileService;
 use Exception;
+use Illuminate\Support\Facades\Auth;
 
 class AdminServices
 {
@@ -35,8 +36,8 @@ class AdminServices
     public function getUserData(Request $request)
     {
         try {
-            if(!User::find($request->id)){
-                 return response()->json(['error' => 'User Not Found'], 404);
+            if (!User::find($request->id)) {
+                return response()->json(['error' => 'User Not Found'], 404);
             }
             $user = User::with('profile')->findOrFail($request->id);
             if (!$user) {
@@ -68,6 +69,9 @@ class AdminServices
     {
         try {
             $user = User::find($id);
+            if (Auth::user()?->id == $id) {
+                return HelperFacades::responseError('Canot delete this user', 404);
+            }
             if (!$user) {
                 return HelperFacades::responseError('User Not Found', 404);
             }

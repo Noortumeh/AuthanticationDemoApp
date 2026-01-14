@@ -26,23 +26,30 @@ const toast = useToast();
 const token = localStorage.getItem("token");
 
 const handleDeleteUser = async () => {
-  showConfirm.value = false
+  showConfirm.value = false;
   try {
-    const res = await fetch(`http://127.0.0.1:8000/api/admin/user/${deleteId.value}`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const res = await fetch(
+      `http://127.0.0.1:8000/api/admin/user/${deleteId.value}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
     const result = await res.json();
-    toast.success("User Deleted successfully!", {
-      timeout: 2000,
-    });
-    setTimeout(() => {
-      window.location.reload();
-    }, 2000);
+    if (res.ok) {
+      toast.success("User Deleted successfully!", {
+        timeout: 2000,
+      });
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
+      return;
+    }
+    toast.error(result.message);
   } catch (err) {
     console.error("Failed to Delete User", err);
     toast.error("Failed to Delete User. Please try again.");
@@ -86,7 +93,12 @@ const handleDeleteUser = async () => {
               {{ action.label }}
             </RouterLink> -->
             <button
-              @click="() => { deleteId = row.id; showConfirm = true }"
+              @click="
+                () => {
+                  deleteId = row.id;
+                  showConfirm = true;
+                }
+              "
               class="px-3 py-1.5 mr-1 whitespace-nowrap bg-red-200 hover:bg-red-400 rounded-2xl hover:cursor-pointer"
             >
               Delete
@@ -104,7 +116,9 @@ const handleDeleteUser = async () => {
     <ConfirmDialog
       :show="showConfirm"
       title="Confirm Delete"
-      :message="'Are you sure you want to delete user with ID ' + deleteId + '?'"
+      :message="
+        'Are you sure you want to delete user with ID ' + deleteId + '?'
+      "
       @confirm="handleDeleteUser"
       @cancel="showConfirm = false"
     />

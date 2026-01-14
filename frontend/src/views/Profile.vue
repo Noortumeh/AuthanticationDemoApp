@@ -1,12 +1,15 @@
 <script setup>
 import ProfileDialog from "@/components/ProfileDialog.vue";
-import { onMounted, ref } from "vue";
+import { onMounted, ref, render } from "vue";
 import { useToast } from "vue-toastification";
 
 const toast = useToast();
 const token = localStorage.getItem("token");
 const data = ref(null);
 const error = ref(null);
+if(!token){
+  window.location.href = "/login";
+}
 
 onMounted(async () => {
   try {
