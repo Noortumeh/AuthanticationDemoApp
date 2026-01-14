@@ -7,7 +7,8 @@ use App\Http\Requests\ProfileRequest;
 use App\Http\Resources\UserResource;
 use App\Models\{Profile, User};
 use Exception;
-use function PHPUnit\Framework\{containsEqual, equalTo};
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ProfileService
 {
@@ -32,10 +33,15 @@ class ProfileService
             if ($user->profile) {
                 return $this->updateProfile($user, $request);
             }
+
+            if ($request->hasFile('image')) {
+                $data['image'] = $request->file('image')?->store('profile', 'public');
+            }
+
             $profile = Profile::create($data);
             return response()->json($profile, 201);
-        } catch (Exception $e) {
-            return response()->json(['error' => 'Profile creation failed', $e], 500);
+        } catch (Exception $error) {
+            return response()->json(['error' => $error || 'Profile creation failed'], 500);
         }
     }
 
@@ -47,16 +53,25 @@ class ProfileService
             if (!$profile) {
                 return response()->json(['error' => 'Profile not found'], 404);
             }
+
+            if ($request['image']) {
+                if (Storage::disk('public')->exists($profile['image'])) {
+                    Storage::disk('public')->delete($profile['image']);
+                }
+                $data['image'] = $request->file('image')?->store('profile', 'public');
+            }
+
             $change = false;
-            foreach($data as $key => $value){
-                if(!$profile->$key === $value){
-                    $change=true;
+            foreach ($data as $key => $value) {
+                if (!$profile->$key || $profile->$key !== $value) {
+                    $change = true;
                     break;
                 }
             }
-            if(!$change){
-                return response()->json(['error' => 'You didnt update any data'], 404);
+            if (!$change) {
+                return response()->json(['error' => 'You didnt update any data'], 409);
             }
+
             $profile->update($data);
             $profile->refresh();
             return response()->json($profile, 200);

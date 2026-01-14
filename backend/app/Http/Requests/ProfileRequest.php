@@ -25,7 +25,7 @@ class ProfileRequest extends FormRequest
             'phone' => 'nullable|string',
             'address' => 'nullable|string',
             'birthdate' => 'nullable|date',
-            'image' => 'nullable|string',
+            'image' => 'nullable|file|max:2048|mimes:png,jpg,jpeg,gif,ico',
         ];
     }
 }
