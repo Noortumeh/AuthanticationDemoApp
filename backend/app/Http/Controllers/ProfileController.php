@@ -6,6 +6,7 @@ use App\Facades\HelperFacades;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\ProfileRequest;
 use App\Services\{HelperServices, ProfileService};
+use Illuminate\Http\Request;
 
 class ProfileController extends Controller
 {

@@ -83,7 +83,7 @@ const handleDeleteProfile = async () => {
       <div class="mb-4 flex justify-center">
         <div v-if="data.profile?.image">
           <img
-            :src="data.profile?.image"
+            :src="'http://127.0.0.1:8000/storage/' + data.profile?.image"
             alt="Profile Image"
             class="mt-2 w-32 h-32 object-cover rounded-full"
           />

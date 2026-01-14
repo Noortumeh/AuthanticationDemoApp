@@ -1,6 +1,6 @@
 <script setup>
 import { reactive } from "vue";
-import { defineProps } from "vue";
+import { defineProps, defineEmits } from "vue";
 
 const props = defineProps({
   fields: {
@@ -26,8 +26,12 @@ const emit = defineEmits(["submitForm"]);
 
 const form = reactive({});
 props.fields.forEach((field) => {
-  form[field.id] = props.defaultValues[field.id] || "";
+  form[field.id] = props.defaultValues[field.id] || null;
 });
+
+const handleFileChange = (event, fieldId) => {
+  form[fieldId] = event.target.files[0];
+};
 
 const handleSubmit = () => {
   emit("submitForm", { ...form });
@@ -47,13 +51,23 @@ const handleSubmit = () => {
         >{{ field.name }}</label
       >
       <input
+        v-if="field.type !== 'file'"
         v-model="form[field.id]"
         :type="field.type"
         :placeholder="field.placeholder"
         :id="field.id"
         :required="field.required"
         class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-      >
+      />
+      <input
+        v-else
+        type="file"
+        :placeholder="field.placeholder"
+        :id="field.id"
+        :required="field.required"
+        @change = "handleFileChange($event, field.id)"
+        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+      />
     </div>
     <div class="flex items-center justify-between">
       <button

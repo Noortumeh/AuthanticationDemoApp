@@ -15,9 +15,9 @@ const props = defineProps({
     type: Object,
     required: false,
   },
-  api:{
-    type: String
-  }
+  api: {
+    type: String,
+  },
 });
 
 const toast = useToast();
@@ -60,7 +60,7 @@ const fields = [
   {
     name: "image",
     id: "image",
-    type: "text",
+    type: "file",
     placeholder: "Upload your profile image",
   },
 ];
@@ -68,47 +68,81 @@ const fields = [
 const loading = ref(false);
 
 const addProfileData = async (bio, phone, address, birthdate, image) => {
-  console.log('Adding profile with:', bio, phone, address, birthdate, image);
+  const formData = new FormData();
+
+  if (bio) formData.append("bio", bio);
+  if (phone) formData.append("phone", phone);
+  if (address) formData.append("address", address);
+  if (birthdate) formData.append("birthdate", birthdate);
+  if (image) formData.append("image", image);
+
+  formData.set("_method", "POST");
+  formData.set("encrypt", "multipart/form-data");
+
+  formData.forEach((value, key) => {
+    console.log(key, value);
+  });
+
   try {
-    const res = await fetch(props.api?props.api:"http://127.0.0.1:8000/api/profile", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-        "access-control-allow-credentials": "true",
-      },
-      body: JSON.stringify({ bio, phone, address, birthdate, image }),
-    });
+    const res = await fetch(
+      props.api ? props.api : "http://127.0.0.1:8000/api/profile",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      }
+    );
     const result = await res.json();
-    toast.success("Profile updated successfully!", {
-      timeout: 2000,
-    });
-    console.log("Profile updated:", result);
+    if (res.ok) {
+      toast.success("Profile updated successfully!", {
+        timeout: 2000,
+      });
+
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
+    } else {
+      toast.error("Failed to update profile");
+    }
     closeModal();
-    setTimeout(()=>{
-      window.location.reload();
-    },2000);
   } catch (err) {
-    console.error("Failed to update profile", err);
-    toast.error("Failed to update profile. Please try again.");
+    console.error("Failed to add profile", err);
+    toast.error("Failed to add profile. Please try again.");
     return;
   }
 };
 
 const updateProfileData = async (bio, phone, address, birthdate, image) => {
-  console.log('Updating profile with:', bio, phone, address, birthdate, image);
+  const formData = new FormData();
+
+  if (bio) formData.set("bio", bio);
+  if (phone) formData.set("phone", phone);
+  if (address) formData.set("address", address);
+  if (birthdate) formData.set("birthdate", birthdate);
+  if (image) formData.set("image", image);
+
+  formData.set("_method", "POST");
+  formData.set("encrypt", "multipart/form-data");
+
+  console.log(bio, phone, address, birthdate, image);
   try {
-    const res = await fetch(props.api ? props.api : "http://127.0.0.1:8000/api/update-profile", {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-        "access-control-allow-credentials": "true",
-      },
-      body: JSON.stringify({ bio, phone, address, birthdate, image }),
-    });
+    const res = await fetch(
+      props.api ? props.api : "http://127.0.0.1:8000/api/update-profile",
+      {
+        method: "POST",
+        headers: {
+          // "Content-Type": "multipart/form-data",
+          // Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+          "access-control-allow-credentials": "true",
+        },
+        body: formData,
+      }
+    );
     const result = await res.json();
     if (res.ok) {
       toast.success("Profile updated successfully!", {
@@ -116,9 +150,9 @@ const updateProfileData = async (bio, phone, address, birthdate, image) => {
       });
       console.log("Profile updated:", result);
       closeModal();
-      setTimeout(()=>{
+      setTimeout(() => {
         window.location.reload();
-      },2000);
+      }, 2000);
     } else {
       throw new Error(result.error || "Failed to update profile");
     }
