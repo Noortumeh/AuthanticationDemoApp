@@ -27,9 +27,12 @@ const emit = defineEmits(["submitForm"]);
 const form = reactive({});
 props.fields.forEach((field) => {
   form[field.id] = props.defaultValues[field.id] || null;
+
+  form['image'] = null;
 });
 
 const handleFileChange = (event, fieldId) => {
+  console.log(form[fieldId]);
   form[fieldId] = event.target.files[0];
 };
 

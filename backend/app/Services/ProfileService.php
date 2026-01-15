@@ -2,13 +2,13 @@
 
 namespace App\Services;
 
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\{Log, Storage};
 use App\Facades\HelperFacades;
 use App\Http\Requests\ProfileRequest;
 use App\Http\Resources\UserResource;
 use App\Models\{Profile, User};
 use Exception;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class ProfileService
 {
