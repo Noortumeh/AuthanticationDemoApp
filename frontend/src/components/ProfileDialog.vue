@@ -89,7 +89,6 @@ const addProfileData = async (bio, phone, address, birthdate, image) => {
       {
         method: "POST",
         headers: {
-          "Content-Type": "multipart/form-data",
           Accept: "application/json",
           Authorization: `Bearer ${token}`,
         },
@@ -119,13 +118,13 @@ const addProfileData = async (bio, phone, address, birthdate, image) => {
 const updateProfileData = async (bio, phone, address, birthdate, image) => {
   const formData = new FormData();
 
-  if (bio) formData.set("bio", bio);
-  if (phone) formData.set("phone", phone);
-  if (address) formData.set("address", address);
-  if (birthdate) formData.set("birthdate", birthdate);
-  if (image) formData.set("image", image);
+  if (bio) formData.append("bio", bio);
+  if (phone) formData.append("phone", phone);
+  if (address) formData.append("address", address);
+  if (birthdate) formData.append("birthdate", birthdate);
+  if (image) formData.append("image", image);
 
-  formData.set("_method", "POST");
+  formData.set("_method", "PUT");
   formData.set("encrypt", "multipart/form-data");
 
   console.log(bio, phone, address, birthdate, image);
@@ -135,10 +134,8 @@ const updateProfileData = async (bio, phone, address, birthdate, image) => {
       {
         method: "POST",
         headers: {
-          // "Content-Type": "multipart/form-data",
-          // Accept: "application/json",
+          Accept: "application/json",
           Authorization: `Bearer ${token}`,
-          "access-control-allow-credentials": "true",
         },
         body: formData,
       }
@@ -153,6 +150,7 @@ const updateProfileData = async (bio, phone, address, birthdate, image) => {
       setTimeout(() => {
         window.location.reload();
       }, 2000);
+      console.log(result);
     } else {
       throw new Error(result.error || "Failed to update profile");
     }
